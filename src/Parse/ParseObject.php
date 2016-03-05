@@ -889,6 +889,41 @@ class ParseObject implements Encodable
      *
      * @return string
      */
+    // public function _encode()
+    // {
+    //     $out = [];
+    //     if ($this->objectId) {
+    //         $out['objectId'] = $this->objectId;
+    //     }
+    //     if ($this->createdAt) {
+    //         $out['createdAt'] = $this->createdAt;
+    //     }
+    //     if ($this->updatedAt) {
+    //         $out['updatedAt'] = $this->updatedAt;
+    //     }
+    //     foreach ($this->serverData as $key => $value) {
+    //         $out[$key] = $value;
+    //     }
+    //     foreach ($this->estimatedData as $key => $value) {
+    //         if (is_object($value) && $value instanceof Encodable) {
+    //             $out[$key] = $value->_encode();
+    //         } elseif (is_array($value)) {
+    //             $out[$key] = [];
+    //             foreach ($value as $item) {
+    //                 if (is_object($item) && $item instanceof Encodable) {
+    //                     $out[$key][] = $item->_encode();
+    //                 } else {
+    //                     $out[$key][] = $item;
+    //                 }
+    //             }
+    //         } else {
+    //             $out[$key] = $value;
+    //         }
+    //     }
+
+    //     return json_encode($out);
+    // }
+
     public function _encode()
     {
         $out = [];
@@ -905,12 +940,14 @@ class ParseObject implements Encodable
             $out[$key] = $value;
         }
         foreach ($this->estimatedData as $key => $value) {
-            if (is_object($value) && $value instanceof Encodable) {
+            // ======= <CHANGED LINE OF CODE> =======
+            if (is_object($value) && method_exists($value,"_encode") ){  //$value instanceof ParseObject) {
                 $out[$key] = $value->_encode();
-            } elseif (is_array($value)) {
-                $out[$key] = [];
+            } else if (is_array($value)) {
+                $out[$key] = array();
                 foreach ($value as $item) {
-                    if (is_object($item) && $item instanceof Encodable) {
+                    // ======= <CHANGED LINE OF CODE> =======
+                    if (is_object($item) && method_exists($item,"_encode") ){ //$item instanceof ParseObject) {
                         $out[$key][] = $item->_encode();
                     } else {
                         $out[$key][] = $item;
@@ -920,8 +957,7 @@ class ParseObject implements Encodable
                 $out[$key] = $value;
             }
         }
-
-        return json_encode($out);
+        return $out;
     }
 
     /**
