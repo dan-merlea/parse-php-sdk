@@ -1075,7 +1075,7 @@ class ParseObject implements Encodable
                 $batch[0]->mergeAfterSave($result);
             } else {
                 foreach ($requests as &$r) {
-                    $r['path'] = '/1/'.$r['path'];
+                    $r['path'] = '/parse/'.$r['path'];
                 }
                 $result = ParseClient::_request(
                     'POST',
