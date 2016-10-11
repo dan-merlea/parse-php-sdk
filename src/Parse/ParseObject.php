@@ -945,12 +945,12 @@ class ParseObject implements Encodable
                 $out[$key] = $value->_encode();
             } else if (is_array($value)) {
                 $out[$key] = array();
-                foreach ($value as $item) {
+                foreach ($value as $index => $item) {
                     // ======= <CHANGED LINE OF CODE> =======
                     if (is_object($item) && method_exists($item,"_encode") ){ //$item instanceof ParseObject) {
                         $out[$key][] = $item->_encode();
                     } else {
-                        $out[$key][] = $item;
+                        $out[$key][$index] = $item;
                     }
                 }
             } else {
